@@ -1,0 +1,1 @@
+/usr/bin/c++   -Wall -Werror -g   CMakeFiles/fractaltree.dir/main.cpp.o CMakeFiles/fractaltree.dir/environment_2d.cpp.o CMakeFiles/fractaltree.dir/Foo.cpp.o CMakeFiles/fractaltree.dir/Vector3.cpp.o  -o fractaltree  -lftgl -lglut -lGLU -lGL 

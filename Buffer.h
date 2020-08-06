@@ -15,8 +15,9 @@ struct RGB {
 
 class Buffer {
 private:
-    unsigned int bufferId = 0;
-    std::size_t size = 0;
+    unsigned int bufferId_ = 0;
+    std::size_t size_ = 0;
+
 public:
     Buffer() = default;
     Buffer(const std::vector<Vector3> &positions, const std::vector<RGB> &colors);
@@ -24,9 +25,9 @@ public:
     Buffer(const Buffer &) = delete;
     Buffer &operator=(const Buffer &) = delete;
 
-    Buffer(Buffer &&other) noexcept : bufferId(other.bufferId), size(other.size) {
-        other.bufferId = 0;
-        other.size = 0;
+    Buffer(Buffer &&other) noexcept : bufferId_(other.bufferId_), size_(other.size_) {
+        other.bufferId_ = 0;
+        other.size_ = 0;
     }
     Buffer &operator=(Buffer &&other) {
         Buffer tmp(std::move(other));
@@ -36,8 +37,8 @@ public:
     }
 
     ~Buffer() {
-        if (bufferId != 0) {
-            glDeleteBuffers(1, &bufferId);
+        if (bufferId_ != 0) {
+            glDeleteBuffers(1, &bufferId_);
         }
     }
 

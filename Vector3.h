@@ -6,6 +6,8 @@
 #define FRACTALTREE_VECTOR3_H
 
 
+#include <ostream>
+
 class Vector3 {
 public:
     float x = 0;
@@ -17,5 +19,8 @@ public:
     Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 };
 
+inline std::ostream &operator<<(std::ostream &out, const Vector3 &v) {
+    return out << "<" << v.x << ", " << v.y << ", " << v.z << ">";
+}
 
 #endif //FRACTALTREE_VECTOR3_H

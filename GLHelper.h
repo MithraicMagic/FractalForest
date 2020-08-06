@@ -9,6 +9,10 @@ inline void glTranslate(const Vector3 &v) {
     glTranslatef(v.x, v.y, v.z);
 }
 
+inline void glVertex(const Vector3 &v) {
+    glVertex3f(v.x, v.y, v.z);
+}
+
 template <typename T>
 T clamp(T lower, T x, T upper) {
     return std::min(upper, std::max(lower, x));

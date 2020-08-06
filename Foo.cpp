@@ -1,5 +1,7 @@
 #include "Foo.h"
 #include "Buffer.h"
+#include "Transformer.h"
+#include "GLHelper.h"
 #include <GL/gl.h>
 #include <random>
 #include <iostream>
@@ -9,6 +11,7 @@ private:
     std::default_random_engine *rng_;
     std::uniform_real_distribution<float> pitch_;
     std::uniform_real_distribution<float> yaw_;
+    Transformer t_;
 
 public:
     explicit Forest(std::default_random_engine *rng) : rng_(rng), pitch_(0, 45), yaw_(0, 360) {}
@@ -22,29 +25,29 @@ public:
     }
 
     void drawTree(float length, int depth = 10) {
-        glPushMatrix();
+        t_.push();
 
         glBegin(GL_LINES);
         glColor3f(1.f / float(depth), 0, 1);
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, length * depth, 0);
+        glVertex(t_.apply({0, 0, 0}));
+        glVertex(t_.apply({0, length * depth, 0}));
         glEnd();
 
         if (depth > 0) {
-            glTranslatef(0, length * depth, 0);
+            t_.translate({0, length * depth, 0});
 
-            glPushMatrix();
-            glRotatef(randYaw(), 0, 1, 0);
-            glRotatef(randPitch(), 0, 0, 1);
+            t_.push();
+            t_.rotate(randYaw(), {0, 1, 0});
+            t_.rotate(randPitch(), {0, 0, 1});
             drawTree(length, depth - 1);
-            glPopMatrix();
+            t_.pop();
 
-            glRotatef(randYaw(), 0, 1, 0);
-            glRotatef(randPitch(), 0, 0, 1);
+            t_.rotate(randYaw(), {0, 1, 0});
+            t_.rotate(randPitch(), {0, 0, 1});
             drawTree(length, depth - 1);
         }
 
-        glPopMatrix();
+        t_.pop();
     }
 };
 
@@ -64,17 +67,14 @@ void drawGrid(int n) {
     glEnd();
 }
 
-Buffer buffer;
+//Buffer buffer;
 
 void Foo::setup() {
-    buffer = Buffer({Vector3(0, 0, 0), Vector3(0, 100, 100)}, {RGB(), RGB()});
+//    buffer = Buffer({Vector3(0, 0, 0), Vector3(0, 100, 100)}, {RGB(), RGB()});
 }
 
 void Foo::draw(int width, int height, int seed) {
     std::default_random_engine rng(seed);
-
-    Buffer y(std::move(buffer));
-    buffer.draw();
 
     glTranslatef(0, -height / 2, 0);
     Forest forest(&rng);

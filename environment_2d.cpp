@@ -26,7 +26,7 @@ static int s_window_width = 800;
 static int s_window_height = 800;
 
 static void reset() {
-    cameraPos = Vector3(0, 0, -1000);
+    cameraPos = Vector3(0, 250, -1000);
     cameraYaw = 0;
     cameraPitch = 0;
     s_rng_seed = 0;
@@ -214,6 +214,8 @@ void Environment2D::start() {
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
     glutTimerFunc(1000 / 30, timer, 0);
+
+    s_drawable->setup();
 
     glutMainLoop();
 }

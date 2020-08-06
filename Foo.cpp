@@ -1,6 +1,8 @@
 #include "Foo.h"
+#include "Buffer.h"
 #include <GL/gl.h>
 #include <random>
+#include <iostream>
 
 class Forest {
 private:
@@ -62,8 +64,17 @@ void drawGrid(int n) {
     glEnd();
 }
 
+Buffer buffer;
+
+void Foo::setup() {
+    buffer = Buffer({Vector3(0, 0, 0), Vector3(0, 100, 100)}, {RGB(), RGB()});
+}
+
 void Foo::draw(int width, int height, int seed) {
     std::default_random_engine rng(seed);
+
+    Buffer y(std::move(buffer));
+    buffer.draw();
 
     glTranslatef(0, -height / 2, 0);
     Forest forest(&rng);

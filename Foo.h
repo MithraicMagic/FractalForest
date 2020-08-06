@@ -6,6 +6,7 @@
 class Foo : public IDrawable {
 public:
     void draw(int width, int height, int seed) override;
+    void setup() override;
 };
 
 

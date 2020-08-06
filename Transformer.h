@@ -2,12 +2,12 @@
 #define FRACTALTREE_TRANSFORMER_H
 
 #include <vector>
-#include <boost/numeric/ublas/matrix.hpp>
+#include <boost/qvm/all.hpp>
 #include "Vector3.h"
 
 class Transformer {
 private:
-    using matrix = boost::numeric::ublas::matrix<float>;
+    using matrix = boost::qvm::mat<float, 4, 4>;
     std::vector<matrix> stack;
     matrix &current() {
         return stack.back();
@@ -17,7 +17,7 @@ private:
     }
 public:
     Transformer() {
-        stack.push_back(boost::numeric::ublas::identity_matrix<float>(4));
+        stack.push_back(boost::qvm::identity_mat<float, 4>());
     }
 
     void push();

@@ -1,14 +1,12 @@
 #include <cassert>
 #include <iostream>
-#include "Buffer.h"
+#include "GLBuffer.h"
 
-Buffer::Buffer(const std::vector<Vector3> &positions, const std::vector<RGB> &colors) {
+GLBuffer::GLBuffer(const std::vector<Vector3> &positions, const std::vector<RGB> &colors) {
     assert(positions.size() == colors.size());
     glGenBuffers(1, &bufferId_);
 
     size_ = positions.size();
-
-    std::cout << size_ * sizeof(Vector3) << ", " << size_ * sizeof(RGB) << std::endl;
 
     glBindBuffer(GL_ARRAY_BUFFER, bufferId_);
     glBufferData(GL_ARRAY_BUFFER, size_ * sizeof(Vector3) + size_ * sizeof(RGB), nullptr, GL_STATIC_DRAW);
@@ -17,7 +15,7 @@ Buffer::Buffer(const std::vector<Vector3> &positions, const std::vector<RGB> &co
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Buffer::draw() const {
+void GLBuffer::draw() const {
     if (bufferId_ == 0) {
         return;
     }

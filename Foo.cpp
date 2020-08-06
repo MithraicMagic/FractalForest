@@ -1,17 +1,15 @@
 #include "Foo.h"
-#include "Buffer.h"
+#include "GLBuffer.h"
 #include "Transformer.h"
-#include "GLHelper.h"
 #include <GL/gl.h>
 #include <random>
-#include <iostream>
 
 class Forest {
 private:
     std::default_random_engine *rng_;
     std::uniform_real_distribution<float> pitch_;
     std::uniform_real_distribution<float> yaw_;
-    Transformer t_;
+    Transformer transformer_;
 
 public:
     explicit Forest(std::default_random_engine *rng) : rng_(rng), pitch_(0, 45), yaw_(0, 360) {}
@@ -24,30 +22,41 @@ public:
         return yaw_(*rng_);
     }
 
-    void drawTree(float length, int depth = 10) {
-        t_.push();
+    GLBuffer buildTree(float length, int depth = 10) {
+        std::vector<Vector3> positions;
+        std::vector<RGB> colors;
+
+        buildTree(length, depth, &positions, &colors);
+
+        return GLBuffer(positions, colors);
+    }
+
+    void buildTree(float length, int depth, std::vector<Vector3> *positions, std::vector<RGB> *colors) {
+        transformer_.push();
 
         glBegin(GL_LINES);
-        glColor3f(1.f / float(depth), 0, 1);
-        glVertex(t_.apply({0, 0, 0}));
-        glVertex(t_.apply({0, length * depth, 0}));
+        colors->push_back({1.f / float(depth), 0, 1});
+        positions->push_back(transformer_.apply({0, 0, 0}));
+
+        colors->push_back({1.f / float(depth), 0, 1});
+        positions->push_back(transformer_.apply({0, length * depth, 0}));
         glEnd();
 
         if (depth > 0) {
-            t_.translate({0, length * depth, 0});
+            transformer_.translate({0, length * depth, 0});
 
-            t_.push();
-            t_.rotate(randYaw(), {0, 1, 0});
-            t_.rotate(randPitch(), {0, 0, 1});
-            drawTree(length, depth - 1);
-            t_.pop();
+            transformer_.push();
+            transformer_.rotate(randYaw(), {0, 1, 0});
+            transformer_.rotate(randPitch(), {0, 0, 1});
+            buildTree(length, depth - 1, positions, colors);
+            transformer_.pop();
 
-            t_.rotate(randYaw(), {0, 1, 0});
-            t_.rotate(randPitch(), {0, 0, 1});
-            drawTree(length, depth - 1);
+            transformer_.rotate(randYaw(), {0, 1, 0});
+            transformer_.rotate(randPitch(), {0, 0, 1});
+            buildTree(length, depth - 1, positions, colors);
         }
 
-        t_.pop();
+        transformer_.pop();
     }
 };
 
@@ -56,7 +65,7 @@ void drawGrid(int n) {
     glBegin(GL_LINES);
 
     for (int i = 0; i <= n; ++i) {
-        float pos = float(i)/n;
+        float pos = float(i) / n;
         glVertex3f(pos, 0, 0);
         glVertex3f(pos, 0, 1);
 
@@ -67,27 +76,31 @@ void drawGrid(int n) {
     glEnd();
 }
 
-//Buffer buffer;
 
 void Foo::setup() {
-//    buffer = Buffer({Vector3(0, 0, 0), Vector3(0, 100, 100)}, {RGB(), RGB()});
+    std::default_random_engine rng(4);
+
+    Forest forest(&rng);
+
+    for (int i = 0; i < 100; i++) {
+        buffers_.push_back(forest.buildTree(20.f));
+    }
 }
 
 void Foo::draw(int width, int height, int seed) {
     std::default_random_engine rng(seed);
-
-    glTranslatef(0, -height / 2, 0);
-    Forest forest(&rng);
-
     std::uniform_real_distribution<float> treepos(-5000, 5000);
 
-    for (int i = 0; i < 15; i++) {
+    glTranslatef(0, -height / 2, 0);
+
+    for (const GLBuffer &buffer : buffers_) {
         glPushMatrix();
         glTranslatef(treepos(rng), 0, treepos(rng));
-        forest.drawTree(20.f);
+        buffer.draw();
         glPopMatrix();
     }
 
+    glColor3f(1, 0, 1);
     glScalef(10000, 1, 10000);
     glTranslatef(-.5, 0, -.5);
     drawGrid(50);

@@ -1,4 +1,4 @@
-#include "environment_2d.h"
+#include "Environment.h"
 #include "Foo.h"
 
 int main(int argc, char **argv) {

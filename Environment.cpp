@@ -1,9 +1,8 @@
-#include "environment_2d.h"
+#include "Environment.h"
 #include "Vector3.h"
 #include "GLHelper.h"
 
 #include <GL/glut.h>
-#include <iostream>
 #include <cmath>
 
 // #define PRINT_DURATION

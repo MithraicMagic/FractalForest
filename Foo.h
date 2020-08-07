@@ -2,7 +2,7 @@
 #define PLATFORMER_FOO_H
 
 #include <vector>
-#include "idrawable.h"
+#include "IDrawable.h"
 #include "GLBuffer.h"
 
 class Foo : public IDrawable {

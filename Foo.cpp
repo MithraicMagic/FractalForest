@@ -89,13 +89,23 @@ void Foo::setup() {
 
 void Foo::draw(int width, int height, int seed) {
     std::default_random_engine rng(seed);
-    std::uniform_real_distribution<float> treepos(-5000, 5000);
+    std::uniform_real_distribution<float> treePos(-5000, 5000);
 
     glTranslatef(0, -height / 2, 0);
 
     for (const GLBuffer &buffer : buffers_) {
         glPushMatrix();
-        glTranslatef(treepos(rng), 0, treepos(rng));
+        glTranslatef(treePos(rng), 0, treePos(rng));
+        buffer.draw();
+        glPopMatrix();
+    }
+
+    std::normal_distribution<float> treeHeight(5, 5);
+    for (const GLBuffer &buffer : buffers_) {
+//        float tHeight = treeHeight(rng);
+        glPushMatrix();
+        glTranslatef(treePos(rng), 0, treePos(rng));
+        glScalef(0.4, 0.4, 0.4);
         buffer.draw();
         glPopMatrix();
     }

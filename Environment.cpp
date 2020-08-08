@@ -21,7 +21,7 @@ namespace {
     Vector3 cameraPos;
     float cameraYaw;
     float cameraPitch;
-    float speed = 5;
+    float speed = 10;
     float mouseSensitivity = 0.5;
 
     int s_rng_seed;
@@ -45,11 +45,8 @@ namespace {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        //For 3D-ness
         gluPerspective(80, float(width) / float(height), 0.01, 25000);
 
-        //For 2D-ness
-//	gluOrtho2D(- width / 2, width / 2, - height / 2, height / 2);
         glMatrixMode(GL_MODELVIEW);
     }
 
@@ -230,6 +227,13 @@ void Environment2D::start() {
     glutCreateWindow("Fractal Trees");
 
     glEnable(GL_DEPTH_TEST);
+
+    GLfloat fogColor[4] = {0,0,0,1};
+    glFogi(GL_FOG_MODE, GL_LINEAR);
+    glFogfv(GL_FOG_COLOR, fogColor);
+    glFogf(GL_FOG_START, 2500.0f); // Fog Start Depth
+    glFogf(GL_FOG_END, 3000.0f); // Fog End Depth
+    glEnable(GL_FOG);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -3,6 +3,7 @@
 #include "Transformer.h"
 #include <GL/gl.h>
 #include <random>
+#include <iostream>
 
 class Forest {
 private:
@@ -38,7 +39,7 @@ public:
         colors->push_back({1.f / float(depth), 0, 1});
         positions->push_back(transformer_.apply({0, 0, 0}));
 
-        colors->push_back({1.f / float(depth), 0, 1});
+        colors->push_back({1.f / float(depth-1), 0, 1});
         positions->push_back(transformer_.apply({0, length * depth, 0}));
         glEnd();
 
@@ -61,19 +62,27 @@ public:
 };
 
 //Drawing a squared grid with n*n cells in the x,z-plane, starting at coordinate (0, 0, 0), ending at coordinate (1, 0, 1)
-void drawGrid(int n) {
-    glBegin(GL_LINES);
+GLBuffer buildGrid(int n) {
+    std::vector<Vector3> positions;
+    std::vector<RGB> colors;
 
     for (int i = 0; i <= n; ++i) {
         float pos = float(i) / n;
-        glVertex3f(pos, 0, 0);
-        glVertex3f(pos, 0, 1);
 
-        glVertex3f(0, 0, pos);
-        glVertex3f(1, 0, pos);
+        for (int j = 0; j < n; ++j) {
+            positions.emplace_back(pos, 0, (1.f/n)*j);
+            positions.emplace_back(pos, 0, (1.f/n)*(j+1));
+
+            positions.emplace_back((1.f/n)*j, 0, pos);
+            positions.emplace_back((1.f/n)*(j+1), 0, pos);
+
+            for (int k = 0; k < 4; ++k) {
+                colors.push_back({1, 0, 1});
+            }
+        }
     }
 
-    glEnd();
+    return GLBuffer(positions, colors);
 }
 
 
@@ -85,6 +94,8 @@ void Foo::setup() {
     for (int i = 0; i < 100; i++) {
         buffers_.push_back(forest.buildTree(20.f));
     }
+
+    gridBuffer = buildGrid(50);
 }
 
 void Foo::draw(int width, int height, int seed) {
@@ -100,18 +111,17 @@ void Foo::draw(int width, int height, int seed) {
         glPopMatrix();
     }
 
-    std::normal_distribution<float> treeHeight(5, 5);
+    std::normal_distribution<float> treeHeight(0.5, 0.05);
     for (const GLBuffer &buffer : buffers_) {
-//        float tHeight = treeHeight(rng);
+        float tHeight = treeHeight(rng);
         glPushMatrix();
         glTranslatef(treePos(rng), 0, treePos(rng));
-        glScalef(0.4, 0.4, 0.4);
+        glScalef(tHeight, tHeight, tHeight);
         buffer.draw();
         glPopMatrix();
     }
 
-    glColor3f(1, 0, 1);
     glScalef(10000, 1, 10000);
     glTranslatef(-.5, 0, -.5);
-    drawGrid(50);
+    gridBuffer.draw();
 }

@@ -8,6 +8,7 @@
 class Foo : public IDrawable {
 private:
     std::vector<GLBuffer> buffers_;
+    GLBuffer gridBuffer;
 public:
     void draw(int width, int height, int seed) override;
     void setup() override;

@@ -6,5 +6,5 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 
 add_definitions("-DGL_GLEXT_PROTOTYPES")
 
-add_executable(fractalforest Main.cpp Environment.cpp Foo.cpp Foo.h Vector3.cpp Vector3.h GLHelper.h GLBuffer.cpp GLBuffer.h Transformer.cpp Transformer.h)
+add_executable(fractalforest Main.cpp Environment.cpp Foo.cpp Foo.h Vector3.cpp Vector3.h GLHelper.h GLBuffer.cpp GLBuffer.h Transformer.cpp Transformer.h Forest.cpp Forest.h)
 target_link_libraries(fractalforest ftgl glut GLU GL)

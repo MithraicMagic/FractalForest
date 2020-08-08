@@ -18,22 +18,21 @@ namespace {
 
     IDrawable *s_drawable;
 
+    Vector3 startingPos = {0, -250, 0};
     Vector3 cameraPos;
+
     float cameraYaw;
     float cameraPitch;
     float speed = 10;
     float mouseSensitivity = 0.5;
 
-    int s_rng_seed;
-
-    int s_window_width = 800;
-    int s_window_height = 800;
+    int s_window_width = 1280;
+    int s_window_height = 720;
 
     void reset() {
-        cameraPos = Vector3(0, 250, -1000);
+        cameraPos = startingPos;
         cameraYaw = 0;
         cameraPitch = 0;
-        s_rng_seed = 0;
     }
 
     void reshape(int width, int height) {
@@ -102,7 +101,7 @@ namespace {
         glRotatef(-cameraPitch, 1, 0, 0);
         glRotatef(-cameraYaw, 0, 1, 0);
         glTranslate(cameraPos);
-        s_drawable->draw(s_window_width, s_window_height, s_rng_seed);
+        s_drawable->draw(s_window_width, s_window_height, cameraPos);
         glPopMatrix();
 
         glPopMatrix();
@@ -128,12 +127,6 @@ namespace {
                 break;
             case 't':
                 cameraYaw--;
-                break;
-            case 'z':
-                s_rng_seed++;
-                break;
-            case 'x':
-                s_rng_seed--;
                 break;
             default:
                 if (k >= 'a' && k <= 'z') {
@@ -231,8 +224,8 @@ void Environment2D::start() {
     GLfloat fogColor[4] = {0,0,0,1};
     glFogi(GL_FOG_MODE, GL_LINEAR);
     glFogfv(GL_FOG_COLOR, fogColor);
-    glFogf(GL_FOG_START, 2500.0f); // Fog Start Depth
-    glFogf(GL_FOG_END, 3000.0f); // Fog End Depth
+    glFogf(GL_FOG_START, 3500.0f); // Fog Start Depth
+    glFogf(GL_FOG_END, 5000.0f); // Fog End Depth
     glEnable(GL_FOG);
 
     glEnable(GL_BLEND);

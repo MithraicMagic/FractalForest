@@ -1,18 +1,27 @@
-#ifndef PLATFORMER_FOO_H
-#define PLATFORMER_FOO_H
+#ifndef FRACTALFOREST_FOO_H
+#define FRACTALFOREST_FOO_H
 
 #include <vector>
+#include <cmath>
+#include <random>
 #include "IDrawable.h"
 #include "GLBuffer.h"
+#include "Forest.h"
 
 class Foo : public IDrawable {
 private:
-    std::vector<GLBuffer> buffers_;
+    std::vector<TreeBuffer> buffers_;
     GLBuffer gridBuffer;
+    std::default_random_engine rng;
+    Forest forest;
 public:
-    void draw(int width, int height, int seed) override;
+    Foo() : forest(&rng) {
+        std::random_device r;
+        rng = std::default_random_engine(r());
+    }
+
+    void draw(int width, int height, Vector3 cameraPos) override;
     void setup() override;
 };
 
-
-#endif //PLATFORMER_FOO_H
+#endif //FRACTALFOREST_FOO_H

@@ -5,17 +5,17 @@
 #include <GL/glut.h>
 #include <cmath>
 #include <array>
+#include <iostream>
 
 // #define PRINT_DURATION
 
 enum key {
     backspace = 8,
-    escape = 27,
+    escape = 27
 };
 
 namespace {
     std::array<bool, 26> keyStates{};
-
     IDrawable *s_drawable;
 
     Vector3 startingPos = {0, -250, 0};
@@ -44,7 +44,7 @@ namespace {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        gluPerspective(80, float(width) / float(height), 0.01, 25000);
+        gluPerspective(75, float(width) / float(height), 0.01, 25000);
 
         glMatrixMode(GL_MODELVIEW);
     }
@@ -128,6 +128,12 @@ namespace {
             case 't':
                 cameraYaw--;
                 break;
+            case 'c':
+                cameraPos.y += 10;
+                break;
+            case ' ':
+                cameraPos.y -= 10;
+                break;
             default:
                 if (k >= 'a' && k <= 'z') {
                     keyStates[k - 'a'] = true;
@@ -194,9 +200,9 @@ namespace {
         s_old_y = y;
     }
 
-    void timer(int val) {
+    void update(int val) {
         glutPostRedisplay();
-        glutTimerFunc(1000 / 60, timer, 0);
+        glutTimerFunc(1000 / 60, update, 0);
     }
 } // namespace
 
@@ -239,7 +245,7 @@ void Environment2D::start() {
     glutSpecialFunc(special);
     glutMouseFunc(mouse);
     glutMotionFunc(motion);
-    glutTimerFunc(1000 / 30, timer, 0);
+    glutTimerFunc(1000 / 60, update, 0);
 
     s_drawable->setup();
 

@@ -12,7 +12,7 @@ struct TreeBuffer {
     bool isInRange(const Vector3 &other, float range) const {
         float diffX = -other.x - treePosition.x;
         float diffZ = -other.z - treePosition.z;
-        return (std::sqrt((diffX*diffX)+(diffZ*diffZ)) < range);
+        return (std::sqrt((diffX * diffX) + (diffZ * diffZ)) < range);
     }
 };
 
@@ -26,9 +26,15 @@ public:
     explicit Forest(std::default_random_engine *rng) : rng_(rng), pitch_(0, 45), yaw_(0, 360) {}
 
     float randPitch();
+
     float randYaw();
+
     TreeBuffer buildTree(Vector3 position, float size, float length, int depth = 10);
+
     void buildTree(float length, int depth, std::vector<Vector3> *positions, std::vector<RGB> *colors);
+
+    void buildLongTree(float length, std::vector<Vector3> *positions, std::vector<RGB> *colors);
+    void buildLongTreeBranch(float height, float treeLength, std::vector<Vector3> *positions, std::vector<RGB> *colors);
 };
 
 

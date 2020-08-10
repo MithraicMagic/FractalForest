@@ -3,9 +3,6 @@
 #include <GL/gl.h>
 #include <random>
 #include <iostream>
-#include <FTGL/ftgl.h>
-
-int ii = 0;
 
 CoinBuffer buildCoin(Vector3 pos, float lineCount = 40) {
     Transformer t;
@@ -125,7 +122,7 @@ void Graphics::draw(int width, int height, Vector3 cameraPos) {
     }
 
     for (CoinBuffer &buffer : coinBuffers_) {
-        if (buffer.isInRange(cameraPos, 7071)) {
+        if (buffer.isInRange(cameraPos, 7075.f)) {
             buffer.draw();
         }
 
@@ -142,9 +139,4 @@ void Graphics::draw(int width, int height, Vector3 cameraPos) {
     glScalef(scale, 1, scale);
     glTranslatef(-.5f, 0, -.5f);
     gridBuffer_.draw();
-
-//    FTGLPixmapFont font("/usr/share/fonts/truetype/msttcorefonts/ariblk.ttf");
-//    glTranslatef(-100, -100, 0);
-//    font.FaceSize(100);
-//    font.Render(("Score: " + std::to_string(ii++)).c_str(), -1, FTPoint(0, 720));
 }
